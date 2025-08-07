@@ -9,7 +9,7 @@ A full-stack backend API built with **NestJS** to manage employee attendance —
 - **[NestJS](https://nestjs.com/)** – Node.js Framework
 - **PostgreSQL** – Relational DB
 - **TypeORM** – ORM for PostgreSQL
-- **OpenAI API** – AI-generated emails (GPT-4o, GPT-3.5)
+- **GROQ API** – AI-generated emails 
 - **ExcelJS** – Excel export
 - **PDFKit / jsPDF** – PDF generation
 - **Docker & Docker Compose** – Containerization
