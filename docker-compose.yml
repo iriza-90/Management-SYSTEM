@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:ihms@J1976@db:5434/employ
+      GROK_API_KEY: ${GROK_API_KEY}
+    volumes:
+      - .:/app
+    command: npm run start:dev
+
+  db:
+    image: postgres:15
+    ports:
+      - '5434:5434'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ihms@J1976
+      POSTGRES_DB: employ
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
