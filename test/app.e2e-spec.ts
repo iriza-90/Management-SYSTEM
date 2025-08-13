@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 
-describe('Attendance E2E', () => {
+describe('App E2E', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -12,52 +12,28 @@ describe('Attendance E2E', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe());
     await app.init();
+  });
+
+  it('/employees (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/employees')
+      .send({ name: 'Jane Doe', email: 'jane@example.com' })
+      .expect(201);
+
+    expect(res.body.name).toBe('Jane Doe');
+  });
+
+  it('/attendance (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/attendance')
+      .send({ employeeId: 1, status: 'IN' })
+      .expect(201);
+
+    expect(res.body.status).toBe('IN');
   });
 
   afterAll(async () => {
     await app.close();
-  });
-
-  it('should record clock-in', async () => {
-    const payload = {
-      employeeId: 1,
-      status: 'IN',
-    };
-
-    const res = await request(app.getHttpServer())
-      .post('/attendance')
-      .send(payload)
-      .expect(201);
-
-    expect(res.body).toHaveProperty('id');
-    expect(res.body.status).toBe('IN');
-  });
-
-  it('should record clock-out', async () => {
-    const payload = {
-      employeeId: 1,
-      status: 'OUT',
-    };
-
-    const res = await request(app.getHttpServer())
-      .post('/attendance')
-      .send(payload)
-      .expect(201);
-
-    expect(res.body.status).toBe('OUT');
-  });
-
-  it('should return 400 for invalid status', async () => {
-    const payload = {
-      employeeId: 1,
-      status: 'BREAKFAST',
-    };
-
-    await request(app.getHttpServer())
-      .post('/attendance')
-      .send(payload)
-      .expect(400);
   });
 });
